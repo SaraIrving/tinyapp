@@ -68,6 +68,17 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   res.redirect('/urls');
 })
 
+app.post('/urls/:id', (req, res) => {
+  //update long URL with what was submitted 
+  console.log('req params = ', req.params);
+  console.log('request body  = ', req.body);
+  const shortURL = req.params.id;
+  const updatedLongURL = req.body.longURL;
+  urlDatabase[shortURL] = updatedLongURL;
+  res.redirect('/urls');
+
+})
+
 app.post("/urls", (req, res) => {
   console.log(req.body);  // Log the POST request body to the console
   // console.log("random string = ", generateRandomString(randomLength, randomOptions))
