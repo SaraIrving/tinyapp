@@ -14,10 +14,10 @@ const urlDatabase = {
 
 const randomOptions = 'abcdefghijklmnopqrstuvwxyz0123456789';
 const randomLength = 6;
-function generateRandomString(randomLength, randomOptions) {
+function generateRandomString(length, content) {
   let randomString = '';
-  for (let i = 0; i < randomLength; i++) {
-    randomString += randomOptions[Math.floor(Math.random() * randomOptions.length)];
+  for (let i = 0; i < length; i++) {
+    randomString += content[Math.floor(Math.random() * content.length)];
   }
   return randomString;
 };
@@ -46,14 +46,15 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const sURL = req.params.shortURL;
-  console.log('sURL = ', sURL);
-  console.log('urlDatabase[sURL] = ', urlDatabase[sURL])
+  // console.log('sURL = ', sURL);
+  // console.log('urlDatabase[sURL] = ', urlDatabase[sURL])
   const templateVars = { shortURL: sURL, longURL: urlDatabase[sURL] };
   res.render("urls_show", templateVars);
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
+  console.log(req.body); 
+  console.log("random string = ", generateRandomString(randomLength, randomOptions)) // Log the POST request body to the console
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
