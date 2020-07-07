@@ -5,12 +5,21 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-
 app.set("view engine", "ejs");
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
+};
+
+const randomOptions = 'abcdefghijklmnopqrstuvwxyz0123456789';
+const randomLength = 6;
+function generateRandomString(randomLength, randomOptions) {
+  let randomString = '';
+  for (let i = 0; i < randomLength; i++) {
+    randomString += randomOptions[Math.floor(Math.random() * randomOptions.length)];
+  }
+  return randomString;
 };
 
 app.get("/", (req, res) => {
