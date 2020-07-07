@@ -40,7 +40,7 @@ app.get("/urls/new", (req, res) => {
 
 
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase };
+  const templateVars = { username: req.cookies["username"], urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
@@ -55,7 +55,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const sURL = req.params.shortURL;
   // console.log('sURL = ', sURL);
   // console.log('urlDatabase[sURL] = ', urlDatabase[sURL])
-  const templateVars = { shortURL: sURL, longURL: urlDatabase[sURL] };
+  const templateVars = { username: req.cookies["username"], shortURL: sURL, longURL: urlDatabase[sURL] };
   res.render("urls_show", templateVars);
 });
 
