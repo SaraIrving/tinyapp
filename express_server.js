@@ -70,8 +70,8 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 app.post('/urls/:id', (req, res) => {
   //update long URL with what was submitted 
-  console.log('req params = ', req.params);
-  console.log('request body  = ', req.body);
+  //console.log('req params = ', req.params);
+  //console.log('request body  = ', req.body);
   const shortURL = req.params.id;
   const updatedLongURL = req.body.longURL;
   urlDatabase[shortURL] = updatedLongURL;
@@ -90,6 +90,14 @@ app.post("/urls", (req, res) => {
   //const templateVars = {shortURL, longURL}
   res.redirect(`/urls/${shortURL}`);
 });
+
+app.post('/login', (req, res) => {
+  //set a cookie named username to the value submitted in the request body
+  console.log('request body = ', req.body); //contains an object with a key username and value what was typed
+  const usernameSubmitted = req.body.username;
+  res.cookie('username', usernameSubmitted);
+  res.redirect('/urls');
+})
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
