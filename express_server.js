@@ -66,7 +66,7 @@ app.post("/urls", (req, res) => {
   const shortURL = generateRandomString(randomLength, randomOptions);
   const longURL = req.body.longURL;
   urlDatabase[shortURL] = longURL;
-  //console.log('urlDatabase after update = ', urlDatabase);
+  console.log('urlDatabase after update = ', urlDatabase);
   //res.send("Ok");         // Respond with 'Ok' (we will replace this)
   //const templateVars = {shortURL, longURL}
   res.redirect(`/urls/${shortURL}`);
