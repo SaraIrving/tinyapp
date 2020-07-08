@@ -125,10 +125,10 @@ app.post('/register', (req, res) => {
     res.cookie('user_id', userId);
     res.redirect('/urls');
     } else {
-      return res.sendStatus(400);
+      return res.status(400).send("Error! The email submitted is already in our database.");
     }
   } else {
-    res.sendStatus(400);
+    res.status(400).send("Error! The email or password field is blank");
   }
 })
 
