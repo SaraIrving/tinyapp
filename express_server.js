@@ -56,7 +56,7 @@ app.get("/hello", (req, res) => {
 app.get("/urls/new", (req, res) => {
   const user_id = req.cookies.user_id;
   const templateVars = {
-    user_id: users[user_id]
+    'user': users[user_id]
   };
   res.render("urls_new", templateVars);
 });
@@ -66,7 +66,7 @@ app.get("/urls", (req, res) => {
   //console.log('req.cookies = ', req.cookies);
   const templateVars = { urls: urlDatabase };
   const user_id = req.cookies.user_id;
-  templateVars[user_id] = users[user_id];
+  templateVars['user'] = users[user_id];
   res.render("urls_index", templateVars);
 });
 
@@ -81,7 +81,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const sURL = req.params.shortURL;
   const templateVars = { shortURL: sURL, longURL: urlDatabase[sURL] };
   const user_id = req.cookies.user_id;
-  templateVars[user_id] = users[user_id];
+  templateVars['user'] = users[user_id];
   res.render("urls_show", templateVars);
 });
 
@@ -89,12 +89,13 @@ app.get('/register', (req, res) => {
   const sURL = req.params.shortURL;
   const templateVars = { shortURL: sURL, longURL: urlDatabase[sURL] };
   const user_id = req.cookies.user_id;
-  templateVars[user_id] = users[user_id];
+  templateVars['user'] = users[user_id];
+  console.log('template vars = ', templateVars); //keys present, values undefined, try just testing for presense of user not it's values so it's not showing up as cannot take property of undefined???
   res.render('users_new', templateVars);
 })
 
 app.post('/register', (req, res) => {
-  //console.log('req body = ', req.body);
+  console.log('req body = ', req.body);
   const userId = generateRandomString(randomLength, randomOptions);
   const userEmail = req.body.email;
   const userPassword = req.body.password;
@@ -103,9 +104,10 @@ app.post('/register', (req, res) => {
   user['email'] = userEmail;
   user['password'] = userPassword;
   users[userId] = user;
-  //console.log('users object = ', users);
+  console.log('users object = ', users);
   res.cookie('user_id', userId);
   res.redirect('/urls');
+
 })
 
 app.post('/urls/:shortURL/delete', (req, res) => {
@@ -149,7 +151,7 @@ app.post('/login', (req, res) => {
 })
 
 app.post('/logout', (req, res) => {
-  //res.clearCookie clears the cookie by name
+  //res.clearCookie clears the cookie by name!
   res.clearCookie('username'); 
   res.redirect('/urls');
 })
