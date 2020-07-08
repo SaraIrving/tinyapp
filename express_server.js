@@ -97,21 +97,39 @@ app.get('/register', (req, res) => {
 app.post('/register', (req, res) => {
   console.log('req body = ', req.body);
   if (req.body.email && req.body.password) {
-  const userId = generateRandomString(randomLength, randomOptions);
-  const userEmail = req.body.email;
-  const userPassword = req.body.password;
-  let user = {};
-  user['id'] = userId;
-  user['email'] = userEmail;
-  user['password'] = userPassword;
-  users[userId] = user;
-  console.log('users object = ', users);
-  res.cookie('user_id', userId);
-  res.redirect('/urls');
+    const userEmail = req.body.email;
+    const emailChecker = function(email, object) {
+      for (let element in object) {
+        // console.log('object = ', object);
+        // console.log('element = ', element);
+        // console.log('object[element] = ', object[element]);
+        // console.log("object[element].email = ", object[element].email);
+        // console.log('email = ', email);
+        if (object[element].email === email) {
+          return false;
+        } 
+      }
+      console.log("return true");
+      return true;
+    };
+    if (emailChecker(userEmail, users)) {
+    const userId = generateRandomString(randomLength, randomOptions);
+    //const userEmail = req.body.email;
+    const userPassword = req.body.password;
+    let user = {};
+    user['id'] = userId;
+    user['email'] = userEmail;
+    user['password'] = userPassword;
+    users[userId] = user;
+    console.log('users object = ', users);
+    res.cookie('user_id', userId);
+    res.redirect('/urls');
+    } else {
+      return res.sendStatus(400);
+    }
   } else {
     res.sendStatus(400);
   }
-
 })
 
 app.post('/urls/:shortURL/delete', (req, res) => {
