@@ -11,6 +11,7 @@ app.use(cookieParser());
 
 app.set("view engine", "ejs");
 
+
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -47,7 +48,7 @@ app.get("/urls/new", (req, res) => {
 
 
 app.get("/urls", (req, res) => {
-  console.log('req.cookies = ', req.cookies);
+  //console.log('req.cookies = ', req.cookies);
   const templateVars = { urls: urlDatabase , username: req.cookies['username']};
   res.render("urls_index", templateVars);
 });
@@ -104,6 +105,12 @@ app.post('/login', (req, res) => {
   //console.log('request body = ', req.body); //contains an object with a key username and value what was typed
   const usernameSubmitted = req.body.username;
   res.cookie('username', usernameSubmitted);
+  res.redirect('/urls');
+})
+
+app.post('/logout', (req, res) => {
+  //res.clearCookie clears the cookie by name
+  res.clearCookie('username'); 
   res.redirect('/urls');
 })
 
