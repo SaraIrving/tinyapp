@@ -176,14 +176,21 @@ app.post('/login', (req, res) => {
   const userEmail = req.body.email;
   const user_id = getIdByEmail(userEmail, users);
   if (user_id) {
+    const passwordInUsers = users[user_id].password;
+    const passwordSubmitted = req.body.password;
+    if (passwordSubmitted === passwordInUsers) {
+
     //how do i get the user_id using the email???
     //verify that the email is in the users object using function
     //if it's there then figure out which user element it's in
     //console.log("user_id = ", user_id);
     res.cookie('user_id', user_id);
     res.redirect('/urls');
+    } else {
+      res.status(403).send('Error! The password does not match our records.')
+    }
   } else {
-    res.status(400).send("The email you are attempting to login with is not in our database");
+    res.status(403).send('Error! The email provided is not in our database');
   }
 })
 
