@@ -96,6 +96,7 @@ app.get('/register', (req, res) => {
 
 app.post('/register', (req, res) => {
   console.log('req body = ', req.body);
+  if (req.body.email && req.body.password) {
   const userId = generateRandomString(randomLength, randomOptions);
   const userEmail = req.body.email;
   const userPassword = req.body.password;
@@ -107,6 +108,9 @@ app.post('/register', (req, res) => {
   console.log('users object = ', users);
   res.cookie('user_id', userId);
   res.redirect('/urls');
+  } else {
+    res.sendStatus(400);
+  }
 
 })
 
