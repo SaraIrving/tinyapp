@@ -86,6 +86,22 @@ app.get('/register', (req, res) => {
   res.render('users_new', templateVars);
 })
 
+app.post('/register', (req, res) => {
+  //console.log('req body = ', req.body);
+  const userId = generateRandomString(randomLength, randomOptions);
+  const userEmail = req.body.email;
+  const userPassword = req.body.password;
+  let user = {};
+  user['id'] = userId;
+  user['email'] = userEmail;
+  user['password'] = userPassword;
+  users[userId] = user;
+  //console.log('users object = ', users);
+  res.cookie('user_id', userId);
+
+  res.redirect('/urls');
+})
+
 app.post('/urls/:shortURL/delete', (req, res) => {
   const shortURL = req.params.shortURL;
   console.log('shortURL = ', shortURL);
