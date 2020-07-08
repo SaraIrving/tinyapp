@@ -117,7 +117,7 @@ app.get('/login', (req, res) => {
 })
 
 app.post('/register', (req, res) => {
-  console.log('req body = ', req.body);
+  //console.log('req body = ', req.body);
   if (req.body.email && req.body.password) {
     const userEmail = req.body.email
     if (getIdByEmail(userEmail, users) === null) {
@@ -128,7 +128,7 @@ app.post('/register', (req, res) => {
       user['email'] = userEmail;
       user['password'] = userPassword;
       users[userId] = user;
-      console.log('users object = ', users);
+      //console.log('users object = ', users);
       res.cookie('user_id', userId);
       res.redirect('/urls');
     } else {
