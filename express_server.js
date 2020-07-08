@@ -41,6 +41,15 @@ function generateRandomString(length, content) {
   return randomString;
 };
 
+const getIdByEmail = function(email, object) {
+  for (let element in object) {
+    if (object[element].email === email) {
+      return element;
+    } 
+  }
+  return null;
+};
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -67,6 +76,7 @@ app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   const user_id = req.cookies.user_id;
   templateVars['user'] = users[user_id];
+  console.log('tempvar = ', templateVars);
   res.render("urls_index", templateVars);
 });
 
@@ -90,45 +100,37 @@ app.get('/register', (req, res) => {
   const templateVars = { shortURL: sURL, longURL: urlDatabase[sURL] };
   const user_id = req.cookies.user_id;
   templateVars['user'] = users[user_id];
-  console.log('template vars = ', templateVars); //keys present, values undefined, try just testing for presense of user not it's values so it's not showing up as cannot take property of undefined???
+  //console.log('template vars = ', templateVars); //keys present, values undefined, try just testing for presense of user not it's values so it's not showing up as cannot take property of undefined???
   res.render('users_new', templateVars);
 })
 
 
 app.get('/login', (req, res) => {
-  res.render('users_login');
+  //need to add TempVar so user is not undefined in the header
+  const templateVars = { urls: urlDatabase };
+  const user_id = req.cookies.user_id;
+  console.log('user_id = ', user_id);
+  console.log('this is the user object = ', users["user_id"]);
+  templateVars['user'] = users[user_id];
+  console.log('template vars = ', templateVars);
+  res.render('users_login', templateVars);
 })
 
 app.post('/register', (req, res) => {
   console.log('req body = ', req.body);
   if (req.body.email && req.body.password) {
-    const userEmail = req.body.email;
-    const emailChecker = function(email, object) {
-      for (let element in object) {
-        // console.log('object = ', object);
-        // console.log('element = ', element);
-        // console.log('object[element] = ', object[element]);
-        // console.log("object[element].email = ", object[element].email);
-        // console.log('email = ', email);
-        if (object[element].email === email) {
-          return false;
-        } 
-      }
-      console.log("return true");
-      return true;
-    };
-    if (emailChecker(userEmail, users)) {
-    const userId = generateRandomString(randomLength, randomOptions);
-    //const userEmail = req.body.email;
-    const userPassword = req.body.password;
-    let user = {};
-    user['id'] = userId;
-    user['email'] = userEmail;
-    user['password'] = userPassword;
-    users[userId] = user;
-    console.log('users object = ', users);
-    res.cookie('user_id', userId);
-    res.redirect('/urls');
+    const userEmail = req.body.email
+    if (getIdByEmail(userEmail, users) === null) {
+      const userId = generateRandomString(randomLength, randomOptions);
+      const userPassword = req.body.password;
+      let user = {};
+      user['id'] = userId;
+      user['email'] = userEmail;
+      user['password'] = userPassword;
+      users[userId] = user;
+      console.log('users object = ', users);
+      res.cookie('user_id', userId);
+      res.redirect('/urls');
     } else {
       return res.status(400).send("Error! The email submitted is already in our database.");
     }
@@ -170,12 +172,21 @@ app.post("/urls", (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  //set a cookie named username to the value submitted in the request body
-  //console.log('request body = ', req.body); //contains an object with a key username and value what was typed
-  const usernameSubmitted = req.body.username;
-  res.cookie('username', usernameSubmitted);
-  res.redirect('/urls');
+  //take the email from here, use this too look them up in teh users object, if they exists return the user id then use this to set the cookie
+  const userEmail = req.body.email;
+  const user_id = getIdByEmail(userEmail, users);
+  if (user_id) {
+    //how do i get the user_id using the email???
+    //verify that the email is in the users object using function
+    //if it's there then figure out which user element it's in
+    //console.log("user_id = ", user_id);
+    res.cookie('user_id', user_id);
+    res.redirect('/urls');
+  } else {
+    res.status(400).send("The email you are attempting to login with is not in our database");
+  }
 })
+
 
 app.post('/logout', (req, res) => {
   //res.clearCookie clears the cookie by name!
@@ -186,3 +197,5 @@ app.post('/logout', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+
