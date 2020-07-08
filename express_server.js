@@ -62,11 +62,15 @@ app.get('/u/:shortURL', (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const sURL = req.params.shortURL;
-  // console.log('sURL = ', sURL);
-  // console.log('urlDatabase[sURL] = ', urlDatabase[sURL])
   const templateVars = { username: req.cookies["username"], shortURL: sURL, longURL: urlDatabase[sURL] };
   res.render("urls_show", templateVars);
 });
+
+app.get('/register', (req, res) => {
+  const sURL = req.params.shortURL;
+  const templateVars = { username: req.cookies["username"], shortURL: sURL, longURL: urlDatabase[sURL] };
+  res.render('users_new', templateVars);
+})
 
 app.post('/urls/:shortURL/delete', (req, res) => {
   const shortURL = req.params.shortURL;
@@ -117,5 +121,3 @@ app.post('/logout', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
-
