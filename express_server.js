@@ -3,7 +3,11 @@ const app = express();
 const PORT = 8080; // default port 8080
 
 const bodyParser = require("body-parser");
+const createApplication = require("express/lib/express");
+const cookieParser = require('cookie-parser');
+
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 
 app.set("view engine", "ejs");
 
@@ -35,12 +39,16 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = {
+    username: req.cookies["username"]
+  };
+  res.render("urls_new", templateVars);
 });
 
 
 app.get("/urls", (req, res) => {
-  const templateVars = { username: req.cookies["username"], urls: urlDatabase };
+  console.log('req.cookies = ', req.cookies);
+  const templateVars = { urls: urlDatabase , username: req.cookies['username']};
   res.render("urls_index", templateVars);
 });
 
@@ -93,7 +101,7 @@ app.post("/urls", (req, res) => {
 
 app.post('/login', (req, res) => {
   //set a cookie named username to the value submitted in the request body
-  console.log('request body = ', req.body); //contains an object with a key username and value what was typed
+  //console.log('request body = ', req.body); //contains an object with a key username and value what was typed
   const usernameSubmitted = req.body.username;
   res.cookie('username', usernameSubmitted);
   res.redirect('/urls');
