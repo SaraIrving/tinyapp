@@ -23,19 +23,23 @@
         </tr>
       </thead>
       <tbody>
-        <% for(let url in urls) { %>
-          <tr>
-            <td><%= url %></td>
-            <td><%= urls[url].longURL %></td>
-            <td>
-              <a href='/urls/<%= url%>'>Edit</a>
-            </td>
-            <td>
-              <form method="POST" action='/urls/<%= url %>/delete' %>>
-                <button type="delete" class="btn btn-primary">Delete</button>
-              </form>
-            </td>
-          </tr>
+        <% if (user) { %>
+          <% for(let url in urls) { %>
+            <tr>
+              <td><%= url %></td>
+              <td><%= urls[url].longURL %></td>
+              <td>
+                <a href='/urls/<%= url%>'>Edit</a>
+              </td>
+              <td>
+                <form method="POST" action='/urls/<%= url %>/delete' %>>
+                  <button type="delete" class="btn btn-primary">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% } %>
+        <% } else { %>
+          <p>Login to be able to see your URLs!</p>
         <% } %>
       </tbody>
     </table>
