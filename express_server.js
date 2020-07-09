@@ -63,11 +63,18 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  const user_id = req.cookies.user_id;
-  const templateVars = {
-    'user': users[user_id]
-  };
-  res.render("urls_new", templateVars);
+  // console.log('req.body = ',req.body)
+  // console.log('req.cookies = ', req.cookies);
+  //check that there is a user_id property in the req.cookies
+  if (req.cookies.user_id) {
+    const user_id = req.cookies.user_id;
+    const templateVars = {
+      'user': users[user_id]
+    };
+    res.render("urls_new", templateVars);
+  } else {
+    res.redirect('/login');
+  }
 });
 
 
