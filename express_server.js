@@ -86,7 +86,7 @@ app.get("/urls/new", (req, res) => {
 
 
 app.get('/urls', (req, res) => {
-  //console.log('req.cookies = ', req.cookies);
+  console.log('req.cookies = ', req.cookies);
   const templateVars = { urls: urlDatabase };
   const user_id = req.cookies.user_id;
   templateVars['user'] = users[user_id];
@@ -156,8 +156,8 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 app.post('/urls/:id', (req, res) => {
   //update long URL with what was submitted 
-  //console.log('req params = ', req.params);
-  //console.log('request body  = ', req.body);
+  console.log('req params = ', req.params);
+  console.log('request body  = ', req.body);
   const shortURL = req.params.id;
   const updatedLongURL = req.body.longURL;
   urlDatabase[shortURL].longURL = updatedLongURL;
@@ -165,16 +165,16 @@ app.post('/urls/:id', (req, res) => {
 })
 
 app.post("/urls", (req, res) => {
-  console.log('req.body = ', req.body);  // Log the POST request body to the console
+  //console.log('req.body = ', req.body);  // Log the POST request body to the console
   // console.log("random string = ", generateRandomString(randomLength, randomOptions))
   // console.log('req.body.longURL = ', req.body.longURL)
   const shortURL = generateRandomString(randomLength, randomOptions);
   const longURL = req.body.longURL;
   const user_id = req.cookies.user_id;
-  console.log('req.cookies = ', req.cookies);
-  console.log('shortURL = ', shortURL);
-  console.log('longURL = ', longURL);
-  console.log('urlDatabase before = ', urlDatabase);
+  // console.log('req.cookies = ', req.cookies);
+  // console.log('shortURL = ', shortURL);
+  // console.log('longURL = ', longURL);
+  // console.log('urlDatabase before = ', urlDatabase);
   urlDatabase[shortURL] = {longURL: longURL, userID: user_id};
 
   //console.log('urlDatabase after update = ', urlDatabase);
