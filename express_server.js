@@ -146,7 +146,7 @@ app.post('/register', (req, res) => {
       const userId = generateRandomString(randomLength, randomOptions);
       const userPassword = req.body.password;
       const hashedPassword = bcrypt.hashSync(userPassword, 10);
-      console.log('hashedPass = ', hashedPassword)
+      //console.log('hashedPass = ', hashedPassword)
       let user = {};
       user['id'] = userId;
       user['email'] = userEmail;
@@ -259,9 +259,10 @@ app.post('/login', (req, res) => {
   const userEmail = req.body.email;
   const user_id = getIdByEmail(userEmail, users);
   if (user_id) {
-    const passwordInUsers = users[user_id].password;
+    const hashedPassword = users[user_id].password;
     const passwordSubmitted = req.body.password;
-    if (passwordSubmitted === passwordInUsers) {
+    if (bcrypt.compareSync(passwordSubmitted, hashedPassword)) {
+      //console.log('passwords match!')
 
     //how do i get the user_id using the email???
     //verify that the email is in the users object using function
