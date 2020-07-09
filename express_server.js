@@ -112,11 +112,9 @@ app.get('/urls/:shortURL', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-  const shortURL = req.params.shortURL;
-  const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL].longURL };
-  const user_id = req.cookies.user_id;
-  templateVars['user'] = users[user_id];
-  //console.log('template vars = ', templateVars); //keys present, values undefined, try just testing for presense of user not it's values so it's not showing up as cannot take property of undefined???
+  console.log('req.params = ', req.params);
+  console.log('req,body = ', req.body);
+  const templateVars = { user: null };
   res.render('users_new', templateVars);
 })
 
