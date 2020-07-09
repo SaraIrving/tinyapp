@@ -147,20 +147,20 @@ app.post('/register', (req, res) => {
 
 app.post('/urls/:shortURL/delete', (req, res) => {
   const shortURL = req.params.shortURL;
-  console.log('shortURL = ', shortURL);
+  //console.log('shortURL = ', shortURL);
   delete urlDatabase[shortURL];
-  console.log('database after = ', urlDatabase);
+  //console.log('database after = ', urlDatabase);
   //const templateVars = { urls: urlDatabase };
   res.redirect('/urls');
 })
 
 app.post('/urls/:id', (req, res) => {
   //update long URL with what was submitted 
-  //console.log('req params = ', req.params);
-  //console.log('request body  = ', req.body);
+  console.log('req params = ', req.params);
+  console.log('request body  = ', req.body);
   const shortURL = req.params.id;
   const updatedLongURL = req.body.longURL;
-  urlDatabase[shortURL] = updatedLongURL;
+  urlDatabase[shortURL].longURL = updatedLongURL;
   res.redirect('/urls');
 })
 
