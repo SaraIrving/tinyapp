@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 //app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
-  keys: ['soloongsoobnoxiousimeanitssoooooolong', 'anotherloooongbeastofastring']
+  keys: ['soloongsoobnoxiousimeanitssoooooolong', 'anotherloooongbeastofastringdogcathorsebunnycowmooooo']
 }));
 
 app.set("view engine", "ejs");
@@ -89,8 +89,8 @@ app.get("/urls/new", (req, res) => {
   // console.log('req.body = ',req.body)
   // console.log('req.cookies = ', req.cookies);
   //check that there is a user_id property in the req.cookies
-  if (req.cookies.user_id) {
-    const user_id = req.cookies.user_id;
+  if (req.session.user_id) {
+    const user_id = req.session.user_id;
     const templateVars = {
       'user': users[user_id]
     };
@@ -103,7 +103,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get('/urls', (req, res) => {
   //console.log('req.cookies = ', req.cookies);
-  const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
   const urlsOfUserDatabase = urlsForUser(user_id);
   const templateVars = { urls: urlsOfUserDatabase, user: users[user_id] };
   //console.log('tempvar = ', templateVars);
@@ -125,7 +125,7 @@ app.get('/urls/:shortURL', (req, res) => {
   //compare the user_id in the cookie to the userID associated with the shortURLs's user_id in the database 
   const shortURL = req.params.shortURL;
   const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL].longURL };
-  const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
   const userIdOFThisUrlInDatabase = urlDatabase[shortURL].userID;
   templateVars['idOfURLInDatabase'] = userIdOFThisUrlInDatabase;
   templateVars['user'] = users[user_id];
@@ -159,7 +159,8 @@ app.post('/register', (req, res) => {
       user['password'] = hashedPassword;
       users[userId] = user;
       //console.log('users object = ', users);
-      res.cookie('user_id', userId);
+      //res.cookie('user_id', userId);
+      req.session.user_id = userId;
       res.redirect('/urls');
     } else {
       return res.status(400).send("Error! The email submitted is already in our database.");
@@ -195,7 +196,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   // console.log('req.body = ', req.body); //{}
   // console.log('req.params = ', req.params); //shortURL
   // console.log('req.cookies = ', req.cookies); //user_id
-  const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
   const shortURL = req.params.shortURL;
   
   if (urlDatabase[shortURL]) {
@@ -224,7 +225,7 @@ app.post('/urls/:id', (req, res) => {
   
   const shortURL = req.params.id;
   const updatedLongURL = req.body.longURL;
-  const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
   if ( urlDatabase[shortURL]) {
     const userIdOFThisUrlInDatabase = urlDatabase[shortURL].userID;
     if (user_id === userIdOFThisUrlInDatabase) {
@@ -247,7 +248,7 @@ app.post("/urls", (req, res) => {
   // console.log('req.body.longURL = ', req.body.longURL)
   const shortURL = generateRandomString(randomLength, randomOptions);
   const longURL = req.body.longURL;
-  const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
   // console.log('req.cookies = ', req.cookies);
   // console.log('shortURL = ', shortURL);
   // console.log('longURL = ', longURL);
@@ -274,7 +275,8 @@ app.post('/login', (req, res) => {
     //verify that the email is in the users object using function
     //if it's there then figure out which user element it's in
     //console.log("user_id = ", user_id);
-    res.cookie('user_id', user_id);
+    //res.cookie('user_id', user_id);
+    req.session.user_id = user_id;
     res.redirect('/urls');
     } else {
       res.status(403).send('Error! The password does not match our records.')
@@ -287,7 +289,9 @@ app.post('/login', (req, res) => {
 
 app.post('/logout', (req, res) => {
   //res.clearCookie clears the cookie by name!
-  res.clearCookie('user_id'); 
+  //res.clearCookie('user_id'); 
+  //clear a session by setting it to null
+  req.session = null;
   res.redirect('/urls');
 })
 
