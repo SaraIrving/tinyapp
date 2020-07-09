@@ -161,12 +161,35 @@ app.post('/register', (req, res) => {
   }
 })
 
+const checkURLExists = function (shortURL) {
+  //check to see if the shortURL is in the urlDatabase, if it's not return false
+  const exists = '';
+  for (let item in urlDatabase) {
+    if (item === shortURL) {
+      exists += item;
+    }
+  }
+  if(!exists) {
+    return false;
+  
+  //check to see if user_ir === user_id stored in the database 
+  }
+  let user_id = req.cookies.user_id;
+  let idInDatabase = urlDatabase[shortURL].userID;
+  if (user_id === idInDatabase) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 app.post('/urls/:shortURL/delete', (req, res) => {
   console.log('req.body = ', req.body); //{}
   console.log('req.params = ', req.params); //shortURL
   console.log('req.cookies = ', req.cookies); //user_id
   const user_id = req.cookies.user_id;
   const shortURL = req.params.shortURL;
+  
   if (urlDatabase[shortURL]) {
     const userIdOFThisUrlInDatabase = urlDatabase[shortURL].userID;
 
