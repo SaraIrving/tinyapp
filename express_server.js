@@ -19,7 +19,7 @@ app.set("view engine", "ejs");
 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "userRandomID" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJurls48lW" }
 };
 
 
@@ -114,6 +114,8 @@ app.get('/u/:shortURL', (req, res) => {
 })
 
 app.get('/urls/:shortURL', (req, res) => {
+  //only display if user is logged in 
+  //if the user is logged in, only display if they made it
   const shortURL = req.params.shortURL;
   const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL].longURL };
   const user_id = req.cookies.user_id;
