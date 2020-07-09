@@ -112,21 +112,13 @@ app.get('/urls/:shortURL', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-  console.log('req.params = ', req.params);
-  console.log('req,body = ', req.body);
   const templateVars = { user: null };
   res.render('users_new', templateVars);
 })
 
 
 app.get('/login', (req, res) => {
-  //need to add TempVar so user is not undefined in the header
-  const templateVars = { urls: urlDatabase };
-  const user_id = req.cookies.user_id;
-  console.log('user_id = ', user_id);
-  console.log('this is the user object = ', users["user_id"]);
-  templateVars['user'] = users[user_id];
-  console.log('template vars = ', templateVars);
+  const templateVars = { user: null };
   res.render('users_login', templateVars);
 })
 
