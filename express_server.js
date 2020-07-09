@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
-
 const bodyParser = require("body-parser");
 const createApplication = require("express/lib/express");
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -107,9 +107,9 @@ app.get('/urls', (req, res) => {
 
 app.get('/u/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  console.log('shortURL = ', shortURL);
+  //console.log('shortURL = ', shortURL);
   const longURL = urlDatabase[shortURL].longURL;
-  console.log('longURL = ', longURL);
+  //console.log('longURL = ', longURL);
   res.redirect(longURL);
 });
 
@@ -123,7 +123,7 @@ app.get('/urls/:shortURL', (req, res) => {
   const userIdOFThisUrlInDatabase = urlDatabase[shortURL].userID;
   templateVars['idOfURLInDatabase'] = userIdOFThisUrlInDatabase;
   templateVars['user'] = users[user_id];
-  console.log('templateVars is = ', templateVars);
+  //console.log('templateVars is = ', templateVars);
   res.render("urls_show", templateVars);
 });
 
@@ -145,10 +145,12 @@ app.post('/register', (req, res) => {
     if (getIdByEmail(userEmail, users) === null) {
       const userId = generateRandomString(randomLength, randomOptions);
       const userPassword = req.body.password;
+      const hashedPassword = bcrypt.hashSync(userPassword, 10);
+      console.log('hashedPass = ', hashedPassword)
       let user = {};
       user['id'] = userId;
       user['email'] = userEmail;
-      user['password'] = userPassword;
+      user['password'] = hashedPassword;
       users[userId] = user;
       //console.log('users object = ', users);
       res.cookie('user_id', userId);
@@ -161,32 +163,32 @@ app.post('/register', (req, res) => {
   }
 })
 
-const checkURLExists = function (shortURL) {
-  //check to see if the shortURL is in the urlDatabase, if it's not return false
-  const exists = '';
-  for (let item in urlDatabase) {
-    if (item === shortURL) {
-      exists += item;
-    }
-  }
-  if(!exists) {
-    return false;
+// const checkURLExists = function (shortURL) {
+//   //check to see if the shortURL is in the urlDatabase, if it's not return false
+//   const exists = '';
+//   for (let item in urlDatabase) {
+//     if (item === shortURL) {
+//       exists += item;
+//     }
+//   }
+//   if(!exists) {
+//     return false;
   
-  //check to see if user_ir === user_id stored in the database 
-  }
-  let user_id = req.cookies.user_id;
-  let idInDatabase = urlDatabase[shortURL].userID;
-  if (user_id === idInDatabase) {
-    return true;
-  } else {
-    return false;
-  }
-}
+//   //check to see if user_ir === user_id stored in the database 
+//   }
+//   let user_id = req.cookies.user_id;
+//   let idInDatabase = urlDatabase[shortURL].userID;
+//   if (user_id === idInDatabase) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
 
 app.post('/urls/:shortURL/delete', (req, res) => {
-  console.log('req.body = ', req.body); //{}
-  console.log('req.params = ', req.params); //shortURL
-  console.log('req.cookies = ', req.cookies); //user_id
+  // console.log('req.body = ', req.body); //{}
+  // console.log('req.params = ', req.params); //shortURL
+  // console.log('req.cookies = ', req.cookies); //user_id
   const user_id = req.cookies.user_id;
   const shortURL = req.params.shortURL;
   
@@ -210,8 +212,8 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 app.post('/urls/:id', (req, res) => {
   //update long URL with what was submitted 
-  console.log('req params = ', req.params);
-  console.log('request body  = ', req.body);
+  // console.log('req params = ', req.params);
+  // console.log('request body  = ', req.body);
   //make a function that check is url exists 
   
   const shortURL = req.params.id;
