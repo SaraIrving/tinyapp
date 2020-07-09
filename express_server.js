@@ -18,7 +18,7 @@ app.set("view engine", "ejs");
 // };
 
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "userRandomID" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
@@ -47,6 +47,16 @@ function generateRandomString(length, content) {
   }
   return randomString;
 };
+
+const urlsForUser = function (id) {
+  const urlsOfThatUser = {};
+  for (let shortURL in urlDatabase) {
+    if (urlDatabase[shortURL].userID === id) {
+      urlsOfThatUser[shortURL] = urlDatabase[shortURL];
+    }
+  }
+  return urlsOfThatUser;
+}
 
 const getIdByEmail = function(email, object) {
   for (let element in object) {
@@ -86,11 +96,11 @@ app.get("/urls/new", (req, res) => {
 
 
 app.get('/urls', (req, res) => {
-  console.log('req.cookies = ', req.cookies);
-  const templateVars = { urls: urlDatabase };
+  //console.log('req.cookies = ', req.cookies);
   const user_id = req.cookies.user_id;
-  templateVars['user'] = users[user_id];
-  console.log('tempvar = ', templateVars);
+  const urlsOfUserDatabase = urlsForUser(user_id);
+  const templateVars = { urls: urlsOfUserDatabase, user: users[user_id] };
+  //console.log('tempvar = ', templateVars);
   res.render("urls_index", templateVars);
 });
 
