@@ -111,15 +111,19 @@ app.get('/u/:shortURL', (req, res) => {
   const longURL = urlDatabase[shortURL].longURL;
   console.log('longURL = ', longURL);
   res.redirect(longURL);
-})
+});
 
 app.get('/urls/:shortURL', (req, res) => {
   //only display if user is logged in 
-  //if the user is logged in, only display if they made it
+  //if the user is logged in, only display if they made that URL
+  //compare the user_id in the cookie to the userID associated with the shortURLs's user_id in the database 
   const shortURL = req.params.shortURL;
   const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL].longURL };
   const user_id = req.cookies.user_id;
+  const userIdOFThisUrlInDatabase = urlDatabase[shortURL].userID;
+  templateVars['idOfURLInDatabase'] = userIdOFThisUrlInDatabase;
   templateVars['user'] = users[user_id];
+  console.log('templateVars is = ', templateVars);
   res.render("urls_show", templateVars);
 });
 
