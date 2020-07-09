@@ -162,22 +162,52 @@ app.post('/register', (req, res) => {
 })
 
 app.post('/urls/:shortURL/delete', (req, res) => {
+  console.log('req.body = ', req.body); //{}
+  console.log('req.params = ', req.params); //shortURL
+  console.log('req.cookies = ', req.cookies); //user_id
+  const user_id = req.cookies.user_id;
   const shortURL = req.params.shortURL;
-  //console.log('shortURL = ', shortURL);
-  delete urlDatabase[shortURL];
-  //console.log('database after = ', urlDatabase);
-  //const templateVars = { urls: urlDatabase };
-  res.redirect('/urls');
+  if (urlDatabase[shortURL]) {
+    const userIdOFThisUrlInDatabase = urlDatabase[shortURL].userID;
+
+    if (user_id === userIdOFThisUrlInDatabase) {
+      
+      //console.log('shortURL = ', shortURL);
+      delete urlDatabase[shortURL];
+      //console.log('database after = ', urlDatabase);
+      //const templateVars = { urls: urlDatabase };
+      res.redirect('/urls');
+    } else {
+      res.send("You can only delete shortURLs that you created!");
+    }
+  } else {
+    res.send('The shortURL doesn\'t exist!');
+  }
 })
 
 app.post('/urls/:id', (req, res) => {
   //update long URL with what was submitted 
   console.log('req params = ', req.params);
   console.log('request body  = ', req.body);
+  //make a function that check is url exists 
+  
   const shortURL = req.params.id;
   const updatedLongURL = req.body.longURL;
-  urlDatabase[shortURL].longURL = updatedLongURL;
-  res.redirect('/urls');
+  const user_id = req.cookies.user_id;
+  if ( urlDatabase[shortURL]) {
+    const userIdOFThisUrlInDatabase = urlDatabase[shortURL].userID;
+    if (user_id === userIdOFThisUrlInDatabase) {
+      urlDatabase[shortURL].longURL = updatedLongURL;
+      res.redirect('/urls');
+    } else {
+      //cant edit what you didnt create
+      res.send('You can only update URLs that you created!');
+    }
+  } else {
+    //shortURL doesn't exist 
+    res.send("The shortURL you are attempting to update does not exist!")
+  }
+  
 })
 
 app.post("/urls", (req, res) => {
