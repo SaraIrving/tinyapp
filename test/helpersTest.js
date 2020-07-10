@@ -22,5 +22,11 @@ describe('getUserByEmail', function() {
     // Write your assert statement here
     assert.strictEqual(user, expectedOutput);
   });
+
+  it('should return undefined when passed a email that is not in the database', function() {
+    const actualOutput = getUserByEmail('fake@lame.com', testUsers);
+    const expectedOutput = undefined;
+    assert.strictEqual(actualOutput, expectedOutput);
+  })
 });
 
