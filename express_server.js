@@ -84,6 +84,13 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
+app.get('/urls', (req, res) => {
+  const user_id = req.session.user_id;
+  const urlsOfUserDatabase = urlsForUser(user_id);
+  const templateVars = { urls: urlsOfUserDatabase, user: users[user_id] };
+  res.render("urls_index", templateVars);
+});
+
 app.get("/urls/new", (req, res) => {
   // console.log('req.body = ',req.body)
   // console.log('req.cookies = ', req.cookies);
@@ -97,16 +104,6 @@ app.get("/urls/new", (req, res) => {
   } else {
     res.redirect('/login');
   }
-});
-
-
-app.get('/urls', (req, res) => {
-  //console.log('req.cookies = ', req.cookies);
-  const user_id = req.session.user_id;
-  const urlsOfUserDatabase = urlsForUser(user_id);
-  const templateVars = { urls: urlsOfUserDatabase, user: users[user_id] };
-  //console.log('tempvar = ', templateVars);
-  res.render("urls_index", templateVars);
 });
 
 
