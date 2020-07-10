@@ -64,7 +64,7 @@ const urlsForUser = function (id) {
   return urlsOfThatUser;
 }
 
-const getIdByEmail = function(email, object) {
+const getUserByEmail = function(email, object) {
   for (let element in object) {
     if (object[element].email === email) {
       return element;
@@ -148,7 +148,7 @@ app.post('/register', (req, res) => {
   //console.log('req body = ', req.body);
   if (req.body.email && req.body.password) {
     const userEmail = req.body.email
-    if (getIdByEmail(userEmail, users) === null) {
+    if (getUserByEmail(userEmail, users) === null) {
       const userId = generateRandomString(randomLength, randomOptions);
       const userPassword = req.body.password;
       const hashedPassword = bcrypt.hashSync(userPassword, 10);
@@ -264,7 +264,7 @@ app.post("/urls", (req, res) => {
 app.post('/login', (req, res) => {
   //take the email from here, use this too look them up in teh users object, if they exists return the user id then use this to set the cookie
   const userEmail = req.body.email;
-  const user_id = getIdByEmail(userEmail, users);
+  const user_id = getUserByEmail(userEmail, users);
   if (user_id) {
     const hashedPassword = users[user_id].password;
     const passwordSubmitted = req.body.password;
