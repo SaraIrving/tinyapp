@@ -76,13 +76,6 @@ app.get("/", (req, res) => {
   }
 });
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
-
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
 
 app.get('/urls', (req, res) => {
   const user_id = req.session.user_id;
@@ -91,10 +84,8 @@ app.get('/urls', (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+
 app.get("/urls/new", (req, res) => {
-  // console.log('req.body = ',req.body)
-  // console.log('req.cookies = ', req.cookies);
-  //check that there is a user_id property in the req.cookies
   if (req.session.user_id) {
     const user_id = req.session.user_id;
     const templateVars = {
@@ -107,27 +98,23 @@ app.get("/urls/new", (req, res) => {
 });
 
 
-app.get('/u/:shortURL', (req, res) => {
-  const shortURL = req.params.shortURL;
-  //console.log('shortURL = ', shortURL);
-  const longURL = urlDatabase[shortURL].longURL;
-  //console.log('longURL = ', longURL);
-  res.redirect(longURL);
-});
-
 app.get('/urls/:shortURL', (req, res) => {
-  //only display if user is logged in 
-  //if the user is logged in, only display if they made that URL
-  //compare the user_id in the cookie to the userID associated with the shortURLs's user_id in the database 
   const shortURL = req.params.shortURL;
   const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL].longURL };
   const user_id = req.session.user_id;
   const userIdOFThisUrlInDatabase = urlDatabase[shortURL].userID;
   templateVars['idOfURLInDatabase'] = userIdOFThisUrlInDatabase;
   templateVars['user'] = users[user_id];
-  //console.log('templateVars is = ', templateVars);
   res.render("urls_show", templateVars);
 });
+
+
+app.get('/u/:shortURL', (req, res) => {
+  const shortURL = req.params.shortURL;
+  const longURL = urlDatabase[shortURL].longURL;
+  res.redirect(longURL);
+});
+
 
 app.get('/register', (req, res) => {
   const templateVars = { user: null };
@@ -141,14 +128,12 @@ app.get('/login', (req, res) => {
 })
 
 app.post('/register', (req, res) => {
-  //console.log('req body = ', req.body);
   if (req.body.email && req.body.password) {
     const userEmail = req.body.email
     if (!helpers.getUserByEmail(userEmail, users)) {
       const userId = generateRandomString(randomLength, randomOptions);
       const userPassword = req.body.password;
       const hashedPassword = bcrypt.hashSync(userPassword, 10);
-      //console.log('hashedPass = ', hashedPassword)
       let user = {};
       user['id'] = userId;
       user['email'] = userEmail;
@@ -187,21 +172,12 @@ app.post('/register', (req, res) => {
 // }
 
 app.post('/urls/:shortURL/delete', (req, res) => {
-  // console.log('req.body = ', req.body); //{}
-  // console.log('req.params = ', req.params); //shortURL
-  // console.log('req.cookies = ', req.cookies); //user_id
   const user_id = req.session.user_id;
   const shortURL = req.params.shortURL;
-  
   if (urlDatabase[shortURL]) {
     const userIdOFThisUrlInDatabase = urlDatabase[shortURL].userID;
-
     if (user_id === userIdOFThisUrlInDatabase) {
-      
-      //console.log('shortURL = ', shortURL);
       delete urlDatabase[shortURL];
-      //console.log('database after = ', urlDatabase);
-      //const templateVars = { urls: urlDatabase };
       res.redirect('/urls');
     } else {
       res.send("You can only delete shortURLs that you created!");
@@ -212,11 +188,6 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 })
 
 app.post('/urls/:id', (req, res) => {
-  //update long URL with what was submitted 
-  // console.log('req params = ', req.params);
-  // console.log('request body  = ', req.body);
-  //make a function that check is url exists 
-  
   const shortURL = req.params.id;
   const updatedLongURL = req.body.longURL;
   const user_id = req.session.user_id;
@@ -226,50 +197,29 @@ app.post('/urls/:id', (req, res) => {
       urlDatabase[shortURL].longURL = updatedLongURL;
       res.redirect('/urls');
     } else {
-      //cant edit what you didnt create
       res.send('You can only update URLs that you created!');
     }
   } else {
-    //shortURL doesn't exist 
     res.send("The shortURL you are attempting to update does not exist!")
   }
   
 })
 
 app.post("/urls", (req, res) => {
-  //console.log('req.body = ', req.body);  // Log the POST request body to the console
-  // console.log("random string = ", generateRandomString(randomLength, randomOptions))
-  // console.log('req.body.longURL = ', req.body.longURL)
   const shortURL = generateRandomString(randomLength, randomOptions);
   const longURL = req.body.longURL;
   const user_id = req.session.user_id;
-  // console.log('req.cookies = ', req.cookies);
-  // console.log('shortURL = ', shortURL);
-  // console.log('longURL = ', longURL);
-  // console.log('urlDatabase before = ', urlDatabase);
   urlDatabase[shortURL] = {longURL: longURL, userID: user_id};
-
-  //console.log('urlDatabase after update = ', urlDatabase);
-  //res.send("Ok");         // Respond with 'Ok' (we will replace this)
-  //const templateVars = {shortURL, longURL}
   res.redirect(`/urls/${shortURL}`);
 });
 
 app.post('/login', (req, res) => {
-  //take the email from here, use this too look them up in teh users object, if they exists return the user id then use this to set the cookie
   const userEmail = req.body.email;
   const user_id = helpers.getUserByEmail(userEmail, users);
   if (user_id) {
     const hashedPassword = users[user_id].password;
     const passwordSubmitted = req.body.password;
     if (bcrypt.compareSync(passwordSubmitted, hashedPassword)) {
-      //console.log('passwords match!')
-
-    //how do i get the user_id using the email???
-    //verify that the email is in the users object using function
-    //if it's there then figure out which user element it's in
-    //console.log("user_id = ", user_id);
-    //res.cookie('user_id', user_id);
     req.session.user_id = user_id;
     res.redirect('/urls');
     } else {
@@ -282,9 +232,6 @@ app.post('/login', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-  //res.clearCookie clears the cookie by name!
-  //res.clearCookie('user_id'); 
-  //clear a session by setting it to null
   req.session = null;
   res.redirect('/urls');
 })
