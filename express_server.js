@@ -141,7 +141,7 @@ app.post('/register', (req, res) => {
   //console.log('req body = ', req.body);
   if (req.body.email && req.body.password) {
     const userEmail = req.body.email
-    if (helpers.getUserByEmail(userEmail, users) === null) {
+    if (!helpers.getUserByEmail(userEmail, users)) {
       const userId = generateRandomString(randomLength, randomOptions);
       const userPassword = req.body.password;
       const hashedPassword = bcrypt.hashSync(userPassword, 10);
@@ -151,8 +151,6 @@ app.post('/register', (req, res) => {
       user['email'] = userEmail;
       user['password'] = hashedPassword;
       users[userId] = user;
-      //console.log('users object = ', users);
-      //res.cookie('user_id', userId);
       req.session.user_id = userId;
       res.redirect('/urls');
     } else {
