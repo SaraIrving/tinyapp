@@ -26,8 +26,19 @@ const checkShortURLExists = function (shortURL, database) {
   }
 }
 
+const checkIdMatches = function (userId, shortURL, database) {
+  const idInDatabase = database[shortURL].userID;
+  if (userId === idInDatabase) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
 module.exports = {getUserByEmail, 
                   generateRandomString, 
                   randomOptions, 
                   randomLength, 
-                  checkShortURLExists};
+                  checkShortURLExists, 
+                  checkIdMatches};
