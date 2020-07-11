@@ -94,12 +94,16 @@ app.get("/urls/new", (req, res) => {
 
 app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL].longURL };
-  const userId = req.session.user_id;
-  const userIdOFThisUrlInDatabase = urlDatabase[shortURL].userID;
-  templateVars['idOfURLInDatabase'] = userIdOFThisUrlInDatabase;
-  templateVars['user'] = users[userId];
-  res.render("urls_show", templateVars);
+  if (urlDatabase[shortURL]) {
+    const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL].longURL };
+    const userId = req.session.user_id;
+    const userIdOFThisUrlInDatabase = urlDatabase[shortURL].userID;
+    templateVars['idOfURLInDatabase'] = userIdOFThisUrlInDatabase;
+    templateVars['user'] = users[userId];
+    res.render("urls_show", templateVars);
+  } else {
+    res.send('That shortURL is not in our database!');
+  }
 });
 
 
@@ -107,8 +111,8 @@ app.get('/u/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
   //check if long URL is in the database, if not handle the error
   if (urlDatabase[shortURL]) {
-  const longURL = urlDatabase[shortURL].longURL;
-  res.redirect(longURL);
+    const longURL = urlDatabase[shortURL].longURL;
+    res.redirect(longURL);
   } else {
     res.send('That shortURL is not in our database!');
   }
