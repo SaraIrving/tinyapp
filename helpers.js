@@ -18,8 +18,8 @@ const generateRandomString = function(length, content) {
 };
 
 
-const checkShortURLExists = function (shortURL) {
-  if (urlDatabase[shortURL]) {
+const checkShortURLExists = function (shortURL, database) {
+  if (database[shortURL]) {
     return true;
   } else {
     return false;
