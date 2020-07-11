@@ -1,3 +1,15 @@
+//creates an object with the same structure as the urlDatabase but which 
+//only contains urls which were created by the user in question
+const urlsForUser = function(id, database) {
+  const urlsOfThatUser = {};
+  for (let shortURL in database) {
+    if (database[shortURL].userID === id) {
+      urlsOfThatUser[shortURL] = database[shortURL];
+    }
+  }
+  return urlsOfThatUser;
+};
+
 //extracts a user's unique ID from the urlDatabase based off of their email
 const getUserByEmail = function(email, database) {
   for (let element in database) {
@@ -43,4 +55,5 @@ module.exports = {getUserByEmail,
                   randomOptions, 
                   randomLength, 
                   checkShortURLExists, 
-                  checkIdMatches};
+                  checkIdMatches,
+                  urlsForUser};
