@@ -3,7 +3,6 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const createApplication = require("express/lib/express");
-
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
 const helpers = require('./helpers');
@@ -18,13 +17,13 @@ app.use(cookieSession({
 app.set("view engine", "ejs");
 
 
-
+//sample of how data is organized in the urlDatabase
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "userRandomID" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJurls48lW" }
 };
 
-
+//sample of how data is organized in the users database
 const users = {
   "userRandomID": {
     id: "userRandomID",
@@ -40,17 +39,6 @@ const users = {
 
 
 
-const urlsForUser = function(id) {
-  const urlsOfThatUser = {};
-  for (let shortURL in urlDatabase) {
-    if (urlDatabase[shortURL].userID === id) {
-      urlsOfThatUser[shortURL] = urlDatabase[shortURL];
-    }
-  }
-  return urlsOfThatUser;
-};
-
-
 app.get("/", (req, res) => {
   const userId = req.session.user_id;
   if (userId) {
@@ -63,7 +51,7 @@ app.get("/", (req, res) => {
 
 app.get('/urls', (req, res) => {
   const userId = req.session.user_id;
-  const urlsOfUserDatabase = urlsForUser(userId);
+  const urlsOfUserDatabase = helpers.urlsForUser(userId, urlDatabase);
   const templateVars = { urls: urlsOfUserDatabase, user: users[userId] };
   res.render("urls_index", templateVars);
 });
@@ -145,9 +133,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   const shortURL = req.params.shortURL;
   if (helpers.checkShortURLExists(shortURL, urlDatabase)) {
     const userId = req.session.user_id;
-    // const idInDatabase = urlDatabase[shortURL].userID;
-    // if (userId === idInDatabase) {
-      if (helpers.checkIdMatches(userId, shortURL, urlDatabase)) {
+    if (helpers.checkIdMatches(userId, shortURL, urlDatabase)) {
       delete urlDatabase[shortURL];
       res.redirect('/urls');
     } else {
@@ -163,10 +149,7 @@ app.post('/urls/:id', (req, res) => {
   const updatedLongURL = req.body.longURL;
   const userId = req.session.user_id;
   if (helpers.checkShortURLExists(shortURL, urlDatabase)) {
-    // const userId = req.session.user_id;
-    // const idInDatabase = urlDatabase[shortURL].userID;
-    // if (userId === idInDatabase) {
-      if (helpers.checkIdMatches(userId, shortURL, urlDatabase)) {
+    if (helpers.checkIdMatches(userId, shortURL, urlDatabase)) {
       urlDatabase[shortURL].longURL = updatedLongURL;
       res.redirect('/urls');
     } else {
