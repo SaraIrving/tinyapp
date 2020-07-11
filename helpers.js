@@ -8,4 +8,18 @@ const getUserByEmail = function(email, database) {
 };
 
 
-module.exports = {getUserByEmail};
+const randomOptions = 'abcdefghijklmnopqrstuvwxyz0123456789';
+const randomLength = 6;
+const generateRandomString = function(length, content) {
+  let randomString = '';
+  for (let i = 0; i < length; i++) {
+    randomString += content[Math.floor(Math.random() * content.length)];
+  }
+  return randomString;
+};
+
+
+module.exports = {getUserByEmail, 
+                  generateRandomString, 
+                  randomOptions, 
+                  randomLength};
