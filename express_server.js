@@ -114,7 +114,7 @@ app.get('/u/:shortURL', (req, res) => {
     const longURL = urlDatabase[shortURL].longURL;
     res.redirect(longURL);
   } else {
-    res.send('That shortURL is not in our database!');
+    res.status(404).send('That shortURL is not in our database!');
   }
 });
 
