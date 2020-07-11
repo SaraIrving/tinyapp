@@ -142,11 +142,12 @@ app.post('/register', (req, res) => {
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
-  const userId = req.session.user_id;
   const shortURL = req.params.shortURL;
   if (helpers.checkShortURLExists(shortURL, urlDatabase)) {
-    const idInDatabase = urlDatabase[shortURL].userID;
-    if (userId === idInDatabase) {
+    const userId = req.session.user_id;
+    // const idInDatabase = urlDatabase[shortURL].userID;
+    // if (userId === idInDatabase) {
+      if (helpers.checkIdMatches(userId, shortURL, urlDatabase)) {
       delete urlDatabase[shortURL];
       res.redirect('/urls');
     } else {
@@ -162,8 +163,10 @@ app.post('/urls/:id', (req, res) => {
   const updatedLongURL = req.body.longURL;
   const userId = req.session.user_id;
   if (helpers.checkShortURLExists(shortURL, urlDatabase)) {
-    const idInDatabase = urlDatabase[shortURL].userID;
-    if (userId === idInDatabase) {
+    // const userId = req.session.user_id;
+    // const idInDatabase = urlDatabase[shortURL].userID;
+    // if (userId === idInDatabase) {
+      if (helpers.checkIdMatches(userId, shortURL, urlDatabase)) {
       urlDatabase[shortURL].longURL = updatedLongURL;
       res.redirect('/urls');
     } else {
@@ -205,6 +208,7 @@ app.post('/logout', (req, res) => {
   req.session = null;
   res.redirect('/urls');
 });
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
