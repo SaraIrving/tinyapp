@@ -40,15 +40,15 @@ const users = {
 
 
 
-const randomOptions = 'abcdefghijklmnopqrstuvwxyz0123456789';
-const randomLength = 6;
-const generateRandomString = function(length, content) {
-  let randomString = '';
-  for (let i = 0; i < length; i++) {
-    randomString += content[Math.floor(Math.random() * content.length)];
-  }
-  return randomString;
-};
+// const randomOptions = 'abcdefghijklmnopqrstuvwxyz0123456789';
+// const randomLength = 6;
+// const generateRandomString = function(length, content) {
+//   let randomString = '';
+//   for (let i = 0; i < length; i++) {
+//     randomString += content[Math.floor(Math.random() * content.length)];
+//   }
+//   return randomString;
+// };
 
 const urlsForUser = function(id) {
   const urlsOfThatUser = {};
@@ -102,14 +102,13 @@ app.get('/urls/:shortURL', (req, res) => {
     templateVars['user'] = users[userId];
     res.render("urls_show", templateVars);
   } else {
-    res.send('That shortURL is not in our database!');
+    res.status(404).send('That shortURL is not in our database!');
   }
 });
 
 
 app.get('/u/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  //check if long URL is in the database, if not handle the error
   if (urlDatabase[shortURL]) {
     const longURL = urlDatabase[shortURL].longURL;
     res.redirect(longURL);
@@ -134,7 +133,7 @@ app.post('/register', (req, res) => {
   if (req.body.email && req.body.password) {
     const userEmail = req.body.email;
     if (!helpers.getUserByEmail(userEmail, users)) {
-      const userId = generateRandomString(randomLength, randomOptions);
+      const userId = helpers.generateRandomString(helpers.randomLength, helpers.randomOptions);
       const userPassword = req.body.password;
       const hashedPassword = bcrypt.hashSync(userPassword, 10);
       let user = {};
@@ -187,7 +186,7 @@ app.post('/urls/:id', (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  const shortURL = generateRandomString(randomLength, randomOptions);
+  const shortURL = helpers.generateRandomString(helpers.randomLength, helpers.randomOptions);
   const longURL = req.body.longURL;
   const userId = req.session.user_id;
   urlDatabase[shortURL] = {longURL: longURL, userID: userId};
