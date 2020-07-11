@@ -105,9 +105,13 @@ app.get('/urls/:shortURL', (req, res) => {
 
 app.get('/u/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  console.log(shortURL);
+  //check if long URL is in the database, if not handle the error
+  if (urlDatabase[shortURL]) {
   const longURL = urlDatabase[shortURL].longURL;
   res.redirect(longURL);
+  } else {
+    res.send('That shortURL is not in our database!');
+  }
 });
 
 
