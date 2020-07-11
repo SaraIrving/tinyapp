@@ -40,16 +40,6 @@ const users = {
 
 
 
-// const randomOptions = 'abcdefghijklmnopqrstuvwxyz0123456789';
-// const randomLength = 6;
-// const generateRandomString = function(length, content) {
-//   let randomString = '';
-//   for (let i = 0; i < length; i++) {
-//     randomString += content[Math.floor(Math.random() * content.length)];
-//   }
-//   return randomString;
-// };
-
 const urlsForUser = function(id) {
   const urlsOfThatUser = {};
   for (let shortURL in urlDatabase) {
@@ -94,7 +84,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  if (urlDatabase[shortURL]) {
+  if (helpers.checkShortURLExists(shortURL, urlDatabase)) {
     const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL].longURL };
     const userId = req.session.user_id;
     const userIdOFThisUrlInDatabase = urlDatabase[shortURL].userID;
@@ -109,7 +99,7 @@ app.get('/urls/:shortURL', (req, res) => {
 
 app.get('/u/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  if (urlDatabase[shortURL]) {
+  if (helpers.checkShortURLExists(shortURL, urlDatabase)) {
     const longURL = urlDatabase[shortURL].longURL;
     res.redirect(longURL);
   } else {
@@ -154,7 +144,7 @@ app.post('/register', (req, res) => {
 app.post('/urls/:shortURL/delete', (req, res) => {
   const userId = req.session.user_id;
   const shortURL = req.params.shortURL;
-  if (urlDatabase[shortURL]) {
+  if (helpers.checkShortURLExists(shortURL, urlDatabase)) {
     const idInDatabase = urlDatabase[shortURL].userID;
     if (userId === idInDatabase) {
       delete urlDatabase[shortURL];
@@ -171,7 +161,7 @@ app.post('/urls/:id', (req, res) => {
   const shortURL = req.params.id;
   const updatedLongURL = req.body.longURL;
   const userId = req.session.user_id;
-  if (urlDatabase[shortURL]) {
+  if (helpers.checkShortURLExists(shortURL, urlDatabase)) {
     const idInDatabase = urlDatabase[shortURL].userID;
     if (userId === idInDatabase) {
       urlDatabase[shortURL].longURL = updatedLongURL;
@@ -219,5 +209,4 @@ app.post('/logout', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
 
