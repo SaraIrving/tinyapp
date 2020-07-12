@@ -6,13 +6,15 @@ const createApplication = require("express/lib/express");
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
 const helpers = require('./helpers');
+const methodOverride = require('method-override');
 
-
+app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({
   name: 'session',
   keys: ['soloongsoobnoxiousimeanitssoooooolong', 'anotherloooongbeastofastringdogcathorsebunnycowmooooo']
 }));
+
 
 app.set("view engine", "ejs");
 
@@ -130,8 +132,8 @@ app.post('/register', (req, res) => {
   }
 });
 
-// POST '/urls/:shortURL/delete' checks that a shortURL exists in the database and checks that the logged in user is the one who created it. If so, it deletes the shortURL and associated data from the urlDatabase, otherwise it sends a related error message.
-app.post('/urls/:shortURL/delete', (req, res) => {
+// DELETE '/urls/:shortURL' checks that a shortURL exists in the database and checks that the logged in user is the one who created it. If so, it deletes the shortURL and associated data from the urlDatabase, otherwise it sends a related error message.
+app.delete('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
   if (helpers.checkShortURLExists(shortURL, urlDatabase)) {
     const userId = req.session.user_id;
@@ -146,8 +148,8 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   }
 });
 
-// POST '/urls/:id' checks that a shortURL exists in the database and checks that the logged in user is the one who created it. If so, it updates the associated longURL with the value provided adn redirects the user to '/urls'. Otherwise, it sends a related error message.
-app.post('/urls/:id', (req, res) => {
+// PUT '/urls/:id' checks that a shortURL exists in the database and checks that the logged in user is the one who created it. If so, it updates the associated longURL with the value provided and redirects the user to '/urls'. Otherwise, it sends a related error message.
+app.put('/urls/:id', (req, res) => {
   const shortURL = req.params.id;
   const updatedLongURL = req.body.longURL;
   const userId = req.session.user_id;
