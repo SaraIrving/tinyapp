@@ -132,7 +132,7 @@ app.post('/register', (req, res) => {
   }
 });
 
-// POST '/urls/:shortURL/delete' checks that a shortURL exists in the database and checks that the logged in user is the one who created it. If so, it deletes the shortURL and associated data from the urlDatabase, otherwise it sends a related error message.
+// DELETE '/urls/:shortURL' checks that a shortURL exists in the database and checks that the logged in user is the one who created it. If so, it deletes the shortURL and associated data from the urlDatabase, otherwise it sends a related error message.
 app.delete('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
   if (helpers.checkShortURLExists(shortURL, urlDatabase)) {
@@ -148,8 +148,8 @@ app.delete('/urls/:shortURL', (req, res) => {
   }
 });
 
-// POST '/urls/:id' checks that a shortURL exists in the database and checks that the logged in user is the one who created it. If so, it updates the associated longURL with the value provided adn redirects the user to '/urls'. Otherwise, it sends a related error message.
-app.post('/urls/:id', (req, res) => {
+// PUT '/urls/:id' checks that a shortURL exists in the database and checks that the logged in user is the one who created it. If so, it updates the associated longURL with the value provided adn redirects the user to '/urls'. Otherwise, it sends a related error message.
+app.put('/urls/:id', (req, res) => {
   const shortURL = req.params.id;
   const updatedLongURL = req.body.longURL;
   const userId = req.session.user_id;
