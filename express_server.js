@@ -148,7 +148,7 @@ app.delete('/urls/:shortURL', (req, res) => {
   }
 });
 
-// PUT '/urls/:id' checks that a shortURL exists in the database and checks that the logged in user is the one who created it. If so, it updates the associated longURL with the value provided adn redirects the user to '/urls'. Otherwise, it sends a related error message.
+// PUT '/urls/:id' checks that a shortURL exists in the database and checks that the logged in user is the one who created it. If so, it updates the associated longURL with the value provided and redirects the user to '/urls'. Otherwise, it sends a related error message.
 app.put('/urls/:id', (req, res) => {
   const shortURL = req.params.id;
   const updatedLongURL = req.body.longURL;
